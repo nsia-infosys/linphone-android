@@ -21,6 +21,8 @@ package org.linphone.call;
 
 import android.Manifest;
 import android.app.KeyguardManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -230,6 +232,13 @@ public class CallIncomingActivity extends LinphoneGenericActivity {
     }
 
     private void answer() {
+        Address address = mCall.getRemoteAddress();
+        String displayName = LinphoneUtils.getAddressDisplayName(address);
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("receivedCallNo", displayName);
+        clipboard.setPrimaryClip(clip);
+        Log.d("displayName: " + displayName);
+
         if (mAlreadyAcceptedOrDeniedCall) {
             return;
         }

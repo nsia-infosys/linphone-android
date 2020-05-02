@@ -19,6 +19,8 @@
  */
 package org.linphone.call;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
@@ -127,6 +129,14 @@ public class CallManager {
             Log.e("[Call Manager] Could not create call params for call");
             return false;
         }
+
+        Address address = call.getRemoteAddress();
+        String displayName = LinphoneUtils.getAddressDisplayName(address);
+        ClipboardManager clipboard =
+                (ClipboardManager) mContext.getSystemService(mContext.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("receivedCallNo", displayName);
+        clipboard.setPrimaryClip(clip);
+        Log.d("acceptCall - displayName: " + displayName);
 
         call.acceptWithParams(params);
         return true;
